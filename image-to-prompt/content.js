@@ -354,8 +354,90 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 function setupImageHover(img) {
   if (img.dataset.promptSetup === 'true') return;
+  
+  // 尺寸太小的不识别（logo、图标）
   if (img.naturalWidth < 50 || img.naturalHeight < 50) return;
+  if (img.width < 50 || img.height < 50) return;
+  
+  // 跳过明显的 logo/图标
+  if (isLikelyLogo(img)) return;
+  
   createFloatingButton(img);
+}
+
+// 判断是否可能是 logo 或小图标
+function isLikelyLogo(img) {
+  const src = (img.src || '').toLowerCase();
+  const alt = (img.alt || '').toLowerCase();
+  const className = (img.className || '').toLowerCase();
+  const parent = img.parentElement;
+  const parentTag = parent?.tagName?.toLowerCase() || '';
+  
+  // URL 包含常见 logo 关键词
+  var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank'];
+  for (var i = 0; i < logoKeywords.length; i++) {
+    if (src.indexOf(logoKeywords[i]) !== -1) return true;
+  }
+  
+  // alt 文本包含 logo 关键词
+  var altKeywords = ['logo', 'icon', 'avatar', 'button', '标志', '图标', '头像'];
+  for (var j = 0; j < altKeywords.length; j++) {
+    if (alt.indexOf(altKeywords[j]) !== -1) return true;
+  }
+  
+  // class 包含常见 logo/icon 类名
+  var classKeywords = ['logo', 'icon', 'avatar', 'thumb', 'badge', 'flag', 'brand', 'logo-'];
+  for (var k = 0; k < classKeywords.length; k++) {
+    if (className.indexOf(classKeywords[k]) !== -1) return true;
+  }
+  
+  // 父元素是 header、nav、footer 或侧边栏（通常包含 logo）
+  if (parentTag === 'header' || parentTag === 'nav' || parentTag === 'footer' || parentTag === 'aside') {
+    // 检查父元素的 class
+    var parentClass = (parent.className || '').toLowerCase();
+    var parentId = (parent.id || '').toLowerCase();
+    var layoutKeywords = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo'];
+    for (var l = 0; l < layoutKeywords.length; l++) {
+      if (parentClass.indexOf(layoutKeywords[l]) !== -1 || parentId.indexOf(layoutKeywords[l]) !== -1) {
+        // 但如果图片尺寸较大（>200），还是识别
+        if (img.naturalWidth > 200 || img.naturalHeight > 200) {
+          return false;
+        }
+        return true;
+      }
+    }
+  }
+  
+  // 检查祖先元素是否在 header/nav/footer 中
+  var ancestor = parent;
+  var maxChecks = 5;
+  var count = 0;
+  while (ancestor && count < maxChecks) {
+    var ancTag = ancestor.tagName?.toLowerCase() || '';
+    if (ancTag === 'header' || ancTag === 'nav' || ancTag === 'footer') {
+      var ancClass = (ancestor.className || '').toLowerCase();
+      var ancId = (ancestor.id || '').toLowerCase();
+      var layoutKw = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo'];
+      for (var m = 0; m < layoutKw.length; m++) {
+        if (ancClass.indexOf(layoutKw[m]) !== -1 || ancId.indexOf(layoutKw[m]) !== -1) {
+          if (img.naturalWidth > 200 || img.naturalHeight > 200) {
+            return false;
+          }
+          return true;
+        }
+      }
+    }
+    ancestor = ancestor.parentElement;
+    count++;
+  }
+  
+  // 极正方形或极长宽比的可能是图标 (比例 > 4:1 或 < 1:4)
+  var ratio = img.naturalWidth / img.naturalHeight;
+  if (ratio > 4 || ratio < 0.25) {
+    return true;
+  }
+  
+  return false;
 }
 
 // 滚动时更新按钮位置
