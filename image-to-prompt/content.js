@@ -374,6 +374,14 @@ function isLikelyLogo(img) {
   const parent = img.parentElement;
   const parentTag = parent?.tagName?.toLowerCase() || '';
   
+  // ============ 最高优先级检测 ============
+  
+  // GitHub 头像 - 最先检测，因为太常见
+  // avatars.githubusercontent.com 且包含 u/ 或 size= 或 v= 参数
+  if (src.indexOf('avatars.githubusercontent') !== -1 || src.indexOf('githubusercontent') !== -1) {
+    return true;
+  }
+  
   // data-component 属性检测（如 GitHub Avatar 组件）
   var dataComponent = (img.getAttribute('data-component') || '').toLowerCase();
   if (dataComponent.indexOf('avatar') !== -1 || dataComponent.indexOf('image') !== -1) {
@@ -386,7 +394,7 @@ function isLikelyLogo(img) {
     return true;
   }
   
-  // srcset 检测（响应式图片通常是缩略图）
+  // srcset 检测（响应式图片通常是缩略图/头像）
   if (img.srcset && img.srcset.length > 0) {
     return true;
   }
@@ -400,18 +408,12 @@ function isLikelyLogo(img) {
     }
   }
   
+  // ============ 其他检测 ============
+  
   // URL 包含常见 logo/头像/图标 关键词
   var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'profile', 'user', 'photo', 'headshot', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank', 'sprite', 'btn', 'button', 'nav', 'menu', 'social', 'share', 'thumb', 'thumbnail', 'small', 'mini'];
   for (var i = 0; i < logoKeywords.length; i++) {
     if (src.indexOf(logoKeywords[i]) !== -1) return true;
-  }
-  
-  // GitHub 头像检测 - 更全面
-  if (src.indexOf('avatars.githubusercontent') !== -1 || src.indexOf('githubusercontent') !== -1) {
-    // URL 中包含 u/ 或 size= 参数的是头像
-    if (src.match(/[\/\?]u[\/=]/) || src.match(/[\?&]size=/)) {
-      return true;
-    }
   }
   
   // 常见图标/头像后缀
