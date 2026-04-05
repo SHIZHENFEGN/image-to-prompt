@@ -355,17 +355,17 @@ observer.observe(document.body, { childList: true, subtree: true });
 function setupImageHover(img) {
   if (img.dataset.promptSetup === 'true') return;
   
-  // 尺寸太小的不识别（logo、图标）
-  if (img.naturalWidth < 80 || img.naturalHeight < 80) return;
-  if (img.width < 80 || img.height < 80) return;
+  // 尺寸太小的不识别（logo、图标、头像、缩略图）
+  if (img.naturalWidth < 120 || img.naturalHeight < 120) return;
+  if (img.width < 120 || img.height < 120) return;
   
-  // 跳过明显的 logo/图标/缩略图
+  // 跳过明显的 logo/图标/头像/缩略图
   if (isLikelyLogo(img)) return;
   
   createFloatingButton(img);
 }
 
-// 判断是否可能是 logo 或小图标
+// 判断是否可能是 logo、头像、图标或小缩略图
 function isLikelyLogo(img) {
   const src = (img.src || '').toLowerCase();
   const alt = (img.alt || '').toLowerCase();
@@ -374,58 +374,67 @@ function isLikelyLogo(img) {
   const parent = img.parentElement;
   const parentTag = parent?.tagName?.toLowerCase() || '';
   
-  // URL 包含常见 logo 关键词
-  var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank', 'sprite', 'btn', 'button', 'nav', 'menu', 'social', 'share'];
+  // URL 包含常见 logo/头像/图标 关键词
+  var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'profile', 'user', 'photo', 'headshot', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank', 'sprite', 'btn', 'button', 'nav', 'menu', 'social', 'share', 'thumb', 'thumbnail', 'small', 'mini'];
   for (var i = 0; i < logoKeywords.length; i++) {
     if (src.indexOf(logoKeywords[i]) !== -1) return true;
   }
   
-  // 常见图标后缀
-  if (src.match(/\.(ico|svg|png)\?/) || src.indexOf('.ico') !== -1 || src.endsWith('.svg')) {
-    // 但 SVG 如果尺寸大则可能是插图
-    if (!src.endsWith('.svg') || (img.naturalWidth < 100 && img.naturalHeight < 100)) {
-      return true;
-    }
+  // 常见图标/头像后缀
+  if (src.match(/\.(ico|svg)\?/) || src.indexOf('.ico') !== -1 || src.endsWith('.svg')) {
+    return true;
   }
   
-  // alt 文本包含 logo 关键词
-  var altKeywords = ['logo', 'icon', 'avatar', 'button', '标志', '图标', '头像', '图标', '商标'];
+  // data URI 很短的通常是占位图
+  if (src.startsWith('data:image') && src.length < 10000) {
+    return true;
+  }
+  
+  // alt 文本包含 logo/头像/图标 关键词
+  var altKeywords = ['logo', 'icon', 'avatar', 'profile', '用户', '头像', '图标', '商标', '按钮', '头像', '缩略图', 'thumbnail'];
   for (var j = 0; j < altKeywords.length; j++) {
     if (alt.indexOf(altKeywords[j]) !== -1) return true;
   }
   
-  // class 包含常见 logo/icon 类名
-  var classKeywords = ['logo', 'icon', 'avatar', 'thumb', 'badge', 'flag', 'brand', 'logo-', 'sprite', 'nav-', 'menu-', 'btn', 'button', 'social', 'share', 'mini', 'small', 'tiny'];
+  // class 包含常见 logo/icon/头像 类名
+  var classKeywords = ['logo', 'icon', 'avatar', 'profile', 'user', 'photo', 'thumb', 'badge', 'flag', 'brand', 'sprite', 'nav', 'menu', 'btn', 'button', 'social', 'share', 'mini', 'small', 'tiny', 'round', 'circle', 'square'];
   for (var k = 0; k < classKeywords.length; k++) {
     if (className.indexOf(classKeywords[k]) !== -1) return true;
   }
   
   // id 包含关键词
-  var idKeywords = ['logo', 'icon', 'avatar', 'brand', 'nav', 'menu', 'header'];
+  var idKeywords = ['logo', 'icon', 'avatar', 'profile', 'user', 'brand', 'nav', 'menu', 'header', 'thumb', 'photo'];
   for (var idIdx = 0; idIdx < idKeywords.length; idIdx++) {
     if (id.indexOf(idKeywords[idIdx]) !== -1) return true;
   }
   
-  // 父元素是链接（通常是 logo 链接）
+  // 父元素是链接（通常是 logo 或头像链接）
   if (parentTag === 'a') {
     var parentClass = (parent.className || '').toLowerCase();
     var parentHref = (parent.href || '').toLowerCase();
-    if (parentClass.indexOf('logo') !== -1 || parentHref.indexOf('logo') !== -1) {
+    var parentAria = (parent.getAttribute('aria-label') || '').toLowerCase();
+    if (parentClass.indexOf('logo') !== -1 || parentClass.indexOf('avatar') !== -1 || parentClass.indexOf('profile') !== -1 || 
+        parentHref.indexOf('logo') !== -1 || parentHref.indexOf('avatar') !== -1 ||
+        parentAria.indexOf('logo') !== -1 || parentAria.indexOf('avatar') !== -1) {
       return true;
     }
   }
   
-  // 父元素是 header、nav、footer 或侧边栏（通常包含 logo）
+  // 父元素是 figure 且包含 avatar 类名
+  if (parentTag === 'figure') {
+    var parentClass = (parent.className || '').toLowerCase();
+    if (parentClass.indexOf('avatar') !== -1 || parentClass.indexOf('profile') !== -1 || parentClass.indexOf('user') !== -1) {
+      return true;
+    }
+  }
+  
+  // 父元素是 header、nav、footer、aside 或 div（通常包含 logo/导航图标）
   if (parentTag === 'header' || parentTag === 'nav' || parentTag === 'footer' || parentTag === 'aside' || parentTag === 'div') {
     var parentClass = (parent.className || '').toLowerCase();
     var parentId = (parent.id || '').toLowerCase();
-    var layoutKeywords = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo', 'toolbar', 'tool-bar', 'action', 'bottom', 'top-bar'];
+    var layoutKeywords = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo', 'toolbar', 'tool-bar', 'action', 'bottom', 'top-bar', 'user', 'profile', 'widget', 'card'];
     for (var l = 0; l < layoutKeywords.length; l++) {
       if (parentClass.indexOf(layoutKeywords[l]) !== -1 || parentId.indexOf(layoutKeywords[l]) !== -1) {
-        // 尺寸较大才识别
-        if (img.naturalWidth > 150 && img.naturalHeight > 150) {
-          return false;
-        }
         return true;
       }
     }
@@ -433,41 +442,71 @@ function isLikelyLogo(img) {
   
   // 检查祖先元素是否在 header/nav/footer 中
   var ancestor = parent;
-  var maxChecks = 6;
+  var maxChecks = 8;
   var count = 0;
   while (ancestor && count < maxChecks) {
     var ancTag = ancestor.tagName?.toLowerCase() || '';
     if (ancTag === 'header' || ancTag === 'nav' || ancTag === 'footer' || ancTag === 'aside') {
       var ancClass = (ancestor.className || '').toLowerCase();
       var ancId = (ancestor.id || '').toLowerCase();
-      var layoutKw = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo', 'toolbar', 'action'];
+      var layoutKw = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo', 'toolbar', 'action', 'user', 'profile'];
       for (var m = 0; m < layoutKw.length; m++) {
         if (ancClass.indexOf(layoutKw[m]) !== -1 || ancId.indexOf(layoutKw[m]) !== -1) {
-          if (img.naturalWidth > 150 && img.naturalHeight > 150) {
-            return false;
-          }
           return true;
         }
+      }
+    }
+    // 检查 article/main 等可能包含用户内容区域的祖先
+    var articleTag = ancestor.tagName?.toLowerCase() || '';
+    if (articleTag === 'article' || articleTag === 'main') {
+      var ancClass = (ancestor.className || '').toLowerCase();
+      if (ancClass.indexOf('comment') !== -1 || ancClass.indexOf('reply') !== -1 || ancClass.indexOf('user') !== -1 || ancClass.indexOf('author') !== -1) {
+        return true;
       }
     }
     ancestor = ancestor.parentElement;
     count++;
   }
   
-  // 极端比例可能是图标 (比例 > 3:1 或 < 1:3)
+  // 极端比例可能是图标 (比例 > 2.5:1 或 < 1:2.5)
   var ratio = img.naturalWidth / img.naturalHeight;
-  if (ratio > 3 || ratio < 0.33) {
+  if (ratio > 2.5 || ratio < 0.4) {
     return true;
   }
   
-  // 图片总尺寸很小（面积 < 10000 像素）
-  if (img.naturalWidth * img.naturalHeight < 10000) {
+  // 图片总尺寸很小（面积 < 15000 像素）
+  if (img.naturalWidth * img.naturalHeight < 15000) {
     return true;
   }
   
-  // 在列表中且尺寸小（可能是列表图标）
-  if (parentTag === 'ul' || parentTag === 'ol' || parentTag === 'li') {
-    if (img.naturalWidth < 100 || img.naturalHeight < 100) {
+  // 尺寸较小（任一边小于 150）
+  if (img.naturalWidth < 150 || img.naturalHeight < 150) {
+    return true;
+  }
+  
+  // 在列表中（可能是列表项图标/头像）
+  if (parentTag === 'ul' || parentTag === 'ol' || parentTag === 'li' || parentTag === 'dl' || parentTag === 'dt' || parentTag === 'dd') {
+    return true;
+  }
+  
+  // 父元素是 article 或 section 中的小图片
+  var ancestor2 = parent;
+  var count2 = 0;
+  while (ancestor2 && count2 < 4) {
+    var ancTag2 = ancestor2.tagName?.toLowerCase() || '';
+    if (ancTag2 === 'article' || ancTag2 === 'section' || ancTag2 === 'main') {
+      var ancClass2 = (ancestor2.className || '').toLowerCase();
+      if (ancClass2.indexOf('comment') !== -1 || ancClass2.indexOf('post') !== -1 || ancClass2.indexOf('item') !== -1 || ancClass2.indexOf('list') !== -1 || ancClass2.indexOf('feed') !== -1) {
+        return true;
+      }
+    }
+    ancestor2 = ancestor2.parentElement;
+    count2++;
+  }
+  
+  // 检查是否有 data-src 或 lazy load（可能是缩略图）
+  if (img.dataset.src || img.dataset.lazySrc || img.dataset.lazyLoad || img.getAttribute('loading') === 'lazy') {
+    if (img.naturalWidth < 200 || img.naturalHeight < 200) {
       return true;
     }
   }
