@@ -356,10 +356,10 @@ function setupImageHover(img) {
   if (img.dataset.promptSetup === 'true') return;
   
   // 尺寸太小的不识别（logo、图标）
-  if (img.naturalWidth < 50 || img.naturalHeight < 50) return;
-  if (img.width < 50 || img.height < 50) return;
+  if (img.naturalWidth < 80 || img.naturalHeight < 80) return;
+  if (img.width < 80 || img.height < 80) return;
   
-  // 跳过明显的 logo/图标
+  // 跳过明显的 logo/图标/缩略图
   if (isLikelyLogo(img)) return;
   
   createFloatingButton(img);
@@ -370,37 +370,60 @@ function isLikelyLogo(img) {
   const src = (img.src || '').toLowerCase();
   const alt = (img.alt || '').toLowerCase();
   const className = (img.className || '').toLowerCase();
+  const id = (img.id || '').toLowerCase();
   const parent = img.parentElement;
   const parentTag = parent?.tagName?.toLowerCase() || '';
   
   // URL 包含常见 logo 关键词
-  var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank'];
+  var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank', 'sprite', 'btn', 'button', 'nav', 'menu', 'social', 'share'];
   for (var i = 0; i < logoKeywords.length; i++) {
     if (src.indexOf(logoKeywords[i]) !== -1) return true;
   }
   
+  // 常见图标后缀
+  if (src.match(/\.(ico|svg|png)\?/) || src.indexOf('.ico') !== -1 || src.endsWith('.svg')) {
+    // 但 SVG 如果尺寸大则可能是插图
+    if (!src.endsWith('.svg') || (img.naturalWidth < 100 && img.naturalHeight < 100)) {
+      return true;
+    }
+  }
+  
   // alt 文本包含 logo 关键词
-  var altKeywords = ['logo', 'icon', 'avatar', 'button', '标志', '图标', '头像'];
+  var altKeywords = ['logo', 'icon', 'avatar', 'button', '标志', '图标', '头像', '图标', '商标'];
   for (var j = 0; j < altKeywords.length; j++) {
     if (alt.indexOf(altKeywords[j]) !== -1) return true;
   }
   
   // class 包含常见 logo/icon 类名
-  var classKeywords = ['logo', 'icon', 'avatar', 'thumb', 'badge', 'flag', 'brand', 'logo-'];
+  var classKeywords = ['logo', 'icon', 'avatar', 'thumb', 'badge', 'flag', 'brand', 'logo-', 'sprite', 'nav-', 'menu-', 'btn', 'button', 'social', 'share', 'mini', 'small', 'tiny'];
   for (var k = 0; k < classKeywords.length; k++) {
     if (className.indexOf(classKeywords[k]) !== -1) return true;
   }
   
+  // id 包含关键词
+  var idKeywords = ['logo', 'icon', 'avatar', 'brand', 'nav', 'menu', 'header'];
+  for (var idIdx = 0; idIdx < idKeywords.length; idIdx++) {
+    if (id.indexOf(idKeywords[idIdx]) !== -1) return true;
+  }
+  
+  // 父元素是链接（通常是 logo 链接）
+  if (parentTag === 'a') {
+    var parentClass = (parent.className || '').toLowerCase();
+    var parentHref = (parent.href || '').toLowerCase();
+    if (parentClass.indexOf('logo') !== -1 || parentHref.indexOf('logo') !== -1) {
+      return true;
+    }
+  }
+  
   // 父元素是 header、nav、footer 或侧边栏（通常包含 logo）
-  if (parentTag === 'header' || parentTag === 'nav' || parentTag === 'footer' || parentTag === 'aside') {
-    // 检查父元素的 class
+  if (parentTag === 'header' || parentTag === 'nav' || parentTag === 'footer' || parentTag === 'aside' || parentTag === 'div') {
     var parentClass = (parent.className || '').toLowerCase();
     var parentId = (parent.id || '').toLowerCase();
-    var layoutKeywords = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo'];
+    var layoutKeywords = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo', 'toolbar', 'tool-bar', 'action', 'bottom', 'top-bar'];
     for (var l = 0; l < layoutKeywords.length; l++) {
       if (parentClass.indexOf(layoutKeywords[l]) !== -1 || parentId.indexOf(layoutKeywords[l]) !== -1) {
-        // 但如果图片尺寸较大（>200），还是识别
-        if (img.naturalWidth > 200 || img.naturalHeight > 200) {
+        // 尺寸较大才识别
+        if (img.naturalWidth > 150 && img.naturalHeight > 150) {
           return false;
         }
         return true;
@@ -410,17 +433,17 @@ function isLikelyLogo(img) {
   
   // 检查祖先元素是否在 header/nav/footer 中
   var ancestor = parent;
-  var maxChecks = 5;
+  var maxChecks = 6;
   var count = 0;
   while (ancestor && count < maxChecks) {
     var ancTag = ancestor.tagName?.toLowerCase() || '';
-    if (ancTag === 'header' || ancTag === 'nav' || ancTag === 'footer') {
+    if (ancTag === 'header' || ancTag === 'nav' || ancTag === 'footer' || ancTag === 'aside') {
       var ancClass = (ancestor.className || '').toLowerCase();
       var ancId = (ancestor.id || '').toLowerCase();
-      var layoutKw = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo'];
+      var layoutKw = ['header', 'nav', 'footer', 'sidebar', 'brand', 'logo', 'toolbar', 'action'];
       for (var m = 0; m < layoutKw.length; m++) {
         if (ancClass.indexOf(layoutKw[m]) !== -1 || ancId.indexOf(layoutKw[m]) !== -1) {
-          if (img.naturalWidth > 200 || img.naturalHeight > 200) {
+          if (img.naturalWidth > 150 && img.naturalHeight > 150) {
             return false;
           }
           return true;
@@ -431,10 +454,22 @@ function isLikelyLogo(img) {
     count++;
   }
   
-  // 极正方形或极长宽比的可能是图标 (比例 > 4:1 或 < 1:4)
+  // 极端比例可能是图标 (比例 > 3:1 或 < 1:3)
   var ratio = img.naturalWidth / img.naturalHeight;
-  if (ratio > 4 || ratio < 0.25) {
+  if (ratio > 3 || ratio < 0.33) {
     return true;
+  }
+  
+  // 图片总尺寸很小（面积 < 10000 像素）
+  if (img.naturalWidth * img.naturalHeight < 10000) {
+    return true;
+  }
+  
+  // 在列表中且尺寸小（可能是列表图标）
+  if (parentTag === 'ul' || parentTag === 'ol' || parentTag === 'li') {
+    if (img.naturalWidth < 100 || img.naturalHeight < 100) {
+      return true;
+    }
   }
   
   return false;
