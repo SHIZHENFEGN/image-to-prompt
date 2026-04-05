@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图生提示词 - 使用帮助</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f7;
+      color: #333;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 40px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1d1d1f;
+    }
+    h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #007aff;
+      margin: 28px 0 16px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    h2:first-of-type { margin-top: 0; }
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      margin: 16px 0 12px 0;
+    }
+    p, li { font-size: 14px; color: #555; }
+    ul { padding-left: 0; list-style: none; }
+    li { margin-bottom: 8px; padding-left: 18px; position: relative; }
+    li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: #007aff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    a { color: #007aff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .quick-start {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      border-left: 4px solid #007aff;
+    }
+    .quick-start p { color: #1565c0; font-size: 15px; }
+    .quick-start .arrow {
+      color: #007aff;
+      margin: 0 8px;
+      font-weight: bold;
+    }
+    .step {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background: #007aff;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .step-content strong { display: block; color: #333; margin-bottom: 6px; font-size: 15px; }
+    .step-content p { margin: 0; font-size: 13px; color: #666; line-height: 1.5; }
+    .back-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #007aff;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 28px;
+      transition: background 0.2s;
+    }
+    .back-btn:hover { background: #0056b3; }
+    .faq-item {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 0;
+    }
+    .faq-q { font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px; }
+    .faq-a { font-size: 13px; color: #666; margin: 0; line-height: 1.5; }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .provider-card {
+      background: #f8f9fa;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .provider-card .tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+    .tag-free { background: #34c759; color: #fff; }
+    .tag-local { background: #5856d6; color: #fff; }
+    .tag-pro { background: #ff9500; color: #fff; }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #ddd, transparent);
+      margin: 28px 0;
+    }
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>使用帮助</h1>
+    
+    <div class="quick-start">
+      <p>快速开始：安装扩展 <span class="arrow">→</span> 配置 API <span class="arrow">→</span> 悬停图片 <span class="arrow">→</span> 点击生成</p>
+    </div>
+
+    <h2>基本使用</h2>
+    
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <strong>安装扩展</strong>
+        <p>在 Chrome 扩展管理页面开启"开发者模式"，点击"加载已解压的扩展程序"，选择本扩展文件夹。</p>
+      </div>
+    </div>
+    
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <strong>配置 API</strong>
+        <p>点击扩展图标打开设置页面，选择 API 服务商并填写 API Key。</p>
+      </div>
+    </div>
+    
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <strong>生成提示词</strong>
+        <p>在任何网页上，鼠标悬停在图片上，会显示"生成 AI 提示词"按钮。点击按钮即可生成。</p>
+      </div>
+    </div>
+
+    <h2>API 配置</h2>
+    
+    <p>本扩展支持 11 个 API 服务商，推荐选择：</p>
+    
+    <div class="provider-grid">
+      <div class="provider-card">
+        <span class="tag tag-free">免费</span>
+        智谱 AI
+      </div>
+      <div class="provider-card">
+        <span class="tag tag-free">免费</span>
+        SiliconFlow
+      </div>
+      <div class="provider-card">
+        <span class="tag tag-local">本地</span>
+        Ollama
+      </div>
+      <div class="provider-card">
+        <span class="tag tag-pro">推荐</span>
+        阿里云
+      </div>
+    </div>
+
+    <h3>API Key 获取地址</h3>
+    <ul>
+      <li>智谱 AI：<a href="https://open.bigmodel.cn/" target="_blank">open.bigmodel.cn</a></li>
+      <li>月之暗面：<a href="https://platform.moonshot.cn/" target="_blank">platform.moonshot.cn</a></li>
+      <li>阿里云：<a href="https://dashscope.console.aliyun.com/" target="_blank">阿里云百炼</a></li>
+      <li>SiliconFlow：<a href="https://cloud.siliconflow.com/" target="_blank">cloud.siliconflow.com</a></li>
+      <li>Ollama：<a href="https://ollama.com/" target="_blank">ollama.com</a> (需本地安装)</li>
+    </ul>
+
+    <h3>推荐模型</h3>
+    <ul>
+      <li>智谱 AI：glm-4v-flash (免费，性价比高)</li>
+      <li>阿里云：qwen-vl-max (效果最好)</li>
+      <li>SiliconFlow：Qwen2-VL-72B (开源最强)</li>
+      <li>Ollama：llava (完全本地，无需网络)</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <h2>常见问题</h2>
+    
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q">Q: 为什么点击按钮没反应？</div>
+        <div class="faq-a">A: 请检查：1) API Key 是否正确填写 2) 网络是否正常 3) API 是否有足够配额</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">Q: 生成的提示词是英文还是中文？</div>
+        <div class="faq-a">A: 生成的提示词为英文，适合 MJ、SD 等英文生图模型使用。</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">Q: 如何使用 Ollama 本地模型？</div>
+        <div class="faq-a">A: 1) 下载安装 Ollama 2) 运行 ollama pull llava 3) 在设置中选择 Ollama 并保存即可。</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">Q: 图片太大上传失败怎么办？</div>
+        <div class="faq-a">A: 尝试使用更小的图片，或选择支持更大图片的模型（如 glm-4v）。</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">Q: 可以商用生成的提示词吗？</div>
+        <div class="faq-a">A: 可以，生成的提示词无版权限制，可自由使用。</div>
+      </div>
+    </div>
+
+    <button class="back-btn" id="backBtn">关闭页面</button>
+  </div>
+
+  <div class="footer">
+    图生提示词 v1.0.0
+  </div>
+
+  <script src="help.js"></script>
+</body>
+</html>

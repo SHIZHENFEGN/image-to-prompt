@@ -8,69 +8,129 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1e1e1e;
-      color: #fff;
-      width: 320px;
-      padding: 16px;
+      background: #f5f5f7;
+      color: #333;
+      width: 380px;
+      padding: 24px;
     }
     h1 {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 22px;
+      font-weight: 700;
       margin-bottom: 16px;
-      background: linear-gradient(135deg, #6366f1, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #1d1d1f;
     }
-    .form-group { margin-bottom: 16px; }
+    h1 .icon { font-size: 26px; }
+    h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #007aff;
+      margin: 20px 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    h2:first-of-type { margin-top: 0; }
+    .form-group { margin-bottom: 14px; }
     .form-group label {
       display: block;
       font-size: 13px;
-      color: #aaa;
+      font-weight: 500;
+      color: #555;
       margin-bottom: 6px;
     }
     .form-group select, .form-group input {
       width: 100%;
-      padding: 10px;
-      background: #2a2a2a;
-      border: 1px solid #444;
-      border-radius: 6px;
-      color: #fff;
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      color: #333;
       font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     .form-group select:focus, .form-group input:focus {
       outline: none;
-      border-color: #6366f1;
+      border-color: #007aff;
+      box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
     }
     .help-text {
-      font-size: 11px;
-      color: #666;
-      margin-top: 4px;
+      font-size: 12px;
+      color: #888;
+      margin-top: 6px;
     }
-    .help-text a { color: #6366f1; text-decoration: none; }
-    .save-btn {
-      width: 100%;
+    .help-text a { color: #007aff; text-decoration: none; }
+    .help-text a:hover { text-decoration: underline; }
+    .btn-row { display: flex; gap: 10px; margin-top: 18px; }
+    .save-btn, .help-btn {
+      flex: 1;
       padding: 12px;
-      background: linear-gradient(135deg, #6366f1, #818cf8);
       border: none;
-      border-radius: 8px;
-      color: white;
+      border-radius: 10px;
       font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .save-btn:hover { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+    .save-btn {
+      background: linear-gradient(135deg, #007aff, #0056b3);
+      color: white;
+    }
+    .save-btn:hover { background: linear-gradient(135deg, #0056b3, #004494); }
+    .help-btn {
+      background: #fff;
+      color: #555;
+      border: 1px solid #ddd;
+    }
+    .help-btn:hover { background: #f8f9fa; color: #333; }
     .status {
       text-align: center;
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 13px;
     }
-    .status.success { color: #10b981; }
-    .status.error { color: #f87171; }
-    .about { margin-top: 20px; padding-top: 16px; border-top: 1px solid #333; }
-    .about-text { font-size: 12px; color: #666; }
+    .status.success { color: #34c759; }
+    .status.error { color: #ff3b30; }
+    .about { margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; }
+    .about-text { font-size: 12px; color: #999; text-align: center; }
+    .tip {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #1565c0;
+    }
+    .tip strong { color: #0d47a1; }
+    .local-tip {
+      background: #fff3e0;
+      border: 1px solid #ffb74d;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #e65100;
+    }
+    .local-tip strong { display: block; margin-bottom: 8px; color: #bf360c; }
+    .local-tip p { margin: 0 0 8px 0; }
+    .local-tip ol {
+      margin: 0;
+      padding-left: 18px;
+      color: #bf360c;
+    }
+    .local-tip li { margin-bottom: 4px; padding-left: 0; }
+    .local-tip li::before { display: none; }
+    .local-tip code {
+      background: #ffe0b2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .local-tip a { color: #007aff; }
   </style>
 </head>
 <body>
-  <h1>图生提示词 - 设置</h1>
+  <h1><span class="icon">🖼️</span> 图生提示词</h1>
+  
+  <p class="tip"><strong>💡 提示：</strong>鼠标悬停在网页图片上，会显示生成按钮。点击按钮即可生成 AI 提示词。</p>
+
+  <h2>🤖 API 配置</h2>
   
   <div class="form-group">
     <label>API 服务商</label>
@@ -100,12 +160,26 @@
     <p class="help-text" id="apiKeyHelp"></p>
   </div>
   
-  <button class="save-btn" id="saveBtn">保存设置</button>
+  <div class="form-group" id="localModelTip" style="display: none;">
+    <div class="local-tip">
+      <strong>💻 本地模型配置说明</strong>
+      <p>使用 Ollama 本地模型需要自行配置：</p>
+      <ol>
+        <li>下载并安装 <a href="https://ollama.com/" target="_blank">Ollama</a></li>
+        <li>在终端运行 <code>ollama pull llava</code> 下载模型</li>
+        <li>确保 Ollama 服务正在运行（默认端口 11434）</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="save-btn" id="saveBtn">保存设置</button>
+    <button class="help-btn" id="helpBtn">使用帮助</button>
+  </div>
   <div class="status" id="status"></div>
   
   <div class="about">
-    <p class="about-text">图生提示词 v1.0.0</p>
-    <p class="about-text">点击网页图片生成 AI 提示词</p>
+    <p class="about-text">图生提示词 v1.0.0 · 将网页图片转化为 AI 生图提示词</p>
   </div>
 
   <script src="popup.js"></script>

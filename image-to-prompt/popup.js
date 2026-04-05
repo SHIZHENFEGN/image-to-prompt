@@ -105,6 +105,7 @@ var modelSelect = document.getElementById('model');
 var apiKeyInput = document.getElementById('apiKey');
 var apiKeyGroup = document.getElementById('apiKeyGroup');
 var apiKeyHelp = document.getElementById('apiKeyHelp');
+var localModelTip = document.getElementById('localModelTip');
 var saveBtn = document.getElementById('saveBtn');
 var status = document.getElementById('status');
 
@@ -120,12 +121,13 @@ function updateModelSelect(providerId) {
     modelSelect.appendChild(option);
   });
   
-  apiKeyHelp.innerHTML = '<a href="' + provider.helpUrl + '" target="_blank">' + provider.helpText + '</a>';
-  
   if (providerId === 'ollama') {
     apiKeyGroup.style.display = 'none';
+    localModelTip.style.display = 'block';
   } else {
     apiKeyGroup.style.display = 'block';
+    localModelTip.style.display = 'none';
+    apiKeyHelp.innerHTML = '<a href="' + provider.helpUrl + '" target="_blank">' + provider.helpText + '</a>';
   }
 }
 
@@ -182,6 +184,11 @@ providerSelect.addEventListener('change', function() {
 });
 
 saveBtn.addEventListener('click', saveSettings);
+
+// 帮助按钮 - 打开帮助页面
+document.getElementById('helpBtn').addEventListener('click', function() {
+  window.open(chrome.runtime.getURL('help.html'), '_blank');
+});
 
 // 初始化
 loadSettings();
