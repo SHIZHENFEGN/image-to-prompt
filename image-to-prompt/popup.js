@@ -10,16 +10,6 @@ var API_PROVIDERS = {
     helpUrl: 'https://open.bigmodel.cn/',
     helpText: '在智谱 AI 开放平台获取'
   },
-  'siliconflow': {
-    name: 'SiliconFlow',
-    models: [
-      { id: 'Qwen/Qwen2-VL-72B-Instruct', name: 'Qwen2-VL-72B (推荐)' },
-      { id: 'deepseek-ai/deepseek-vl2', name: 'DeepSeek-VL2' },
-      { id: 'ZhipuAI/GLM-4.5V', name: 'GLM-4.5V' }
-    ],
-    helpUrl: 'https://cloud.siliconflow.com/',
-    helpText: '在 SiliconFlow 获取'
-  },
   'moonshot': {
     name: '月之暗面',
     models: [
@@ -27,6 +17,68 @@ var API_PROVIDERS = {
     ],
     helpUrl: 'https://platform.moonshot.cn/',
     helpText: '在月之暗面平台获取'
+  },
+  'baidu': {
+    name: '百度智能云',
+    models: [
+      { id: 'eb-4', name: 'eb-4' }
+    ],
+    helpUrl: 'https://qianfan.baidubce.com/',
+    helpText: '在百度智能云获取'
+  },
+  'alibaba': {
+    name: '阿里云',
+    models: [
+      { id: 'qwen-vl-max', name: 'qwen-vl-max (推荐)' },
+      { id: 'qwen-vl-plus', name: 'qwen-vl-plus' }
+    ],
+    helpUrl: 'https://dashscope.aliyuncs.com/',
+    helpText: '在阿里云百炼平台获取'
+  },
+  'tencent': {
+    name: '腾讯云',
+    models: [
+      { id: 'hunyuan-vision', name: 'hunyuan-vision' }
+    ],
+    helpUrl: 'https://console.cloud.tencent.com/hunyuan',
+    helpText: '在腾讯云获取'
+  },
+  'baichuan': {
+    name: '百川智能',
+    models: [
+      { id: 'Baichuan-4-Vision', name: 'Baichuan-4-Vision' }
+    ],
+    helpUrl: 'https://www.baichuan-ai.com/',
+    helpText: '在百川智能平台获取'
+  },
+  'minimax': {
+    name: 'MiniMax',
+    models: [
+      { id: 'MiniMax-Text-01', name: 'MiniMax-Text-01' }
+    ],
+    helpUrl: 'https://platform.minimax.chat/',
+    helpText: '在 MiniMax 平台获取'
+  },
+  'stepfun': {
+    name: '阶跃星辰',
+    models: [
+      { id: 'step-1v', name: 'step-1v (推荐)' },
+      { id: 'step-1o', name: 'step-1o' }
+    ],
+    helpUrl: 'https://platform.stepfun.cn/',
+    helpText: '在阶跃星辰平台获取'
+  },
+  'siliconflow': {
+    name: 'SiliconFlow',
+    models: [
+      { id: 'Qwen/Qwen2-VL-72B-Instruct', name: 'Qwen2-VL-72B (推荐)' },
+      { id: 'deepseek-ai/deepseek-vl2', name: 'DeepSeek-VL2' },
+      { id: 'ZhipuAI/GLM-4.5V', name: 'GLM-4.5V' },
+      { id: 'ZhipuAI/GLM-4.6V', name: 'GLM-4.6V' },
+      { id: 'Qwen/Qwen2.5-VL-7B-Instruct', name: 'Qwen2.5-VL-7B' }
+    ],
+    helpUrl: 'https://cloud.siliconflow.com/',
+    helpText: '在 SiliconFlow 获取'
   },
   'deepseek': {
     name: 'DeepSeek',
@@ -39,8 +91,9 @@ var API_PROVIDERS = {
   'ollama': {
     name: 'Ollama (本地)',
     models: [
-      { id: 'llava', name: 'llava' },
-      { id: 'llava:7b', name: 'llava:7b' }
+      { id: 'llava', name: 'llava (推荐)' },
+      { id: 'llava:7b', name: 'llava:7b' },
+      { id: 'llava:13b', name: 'llava:13b' }
     ],
     helpUrl: 'https://ollama.com/',
     helpText: '本地部署，无需 API Key'

@@ -8,7 +8,24 @@ const API_PROVIDERS = {
       { id: 'glm-4v', name: 'glm-4v' },
       { id: 'glm-4v-plus', name: 'glm-4v-plus' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'moonshot': {
     name: '月之暗面',
@@ -16,7 +33,24 @@ const API_PROVIDERS = {
     models: [
       { id: 'moonshot-v1-8k-vision', name: 'moonshot-v1-8k-vision' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'baidu': {
     name: '百度智能云',
@@ -25,17 +59,53 @@ const API_PROVIDERS = {
       { id: 'eb-4', name: 'eb-4' }
     ],
     needsKey: true,
-    authType: 'bce'
+    authType: 'bce',
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'alibaba': {
     name: '阿里云',
     endpoint: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation',
     models: [
-      { id: 'qwen-vl-max', name: 'qwen-vl-max' },
+      { id: 'qwen-vl-max', name: 'qwen-vl-max (推荐)' },
       { id: 'qwen-vl-plus', name: 'qwen-vl-plus' }
     ],
     needsKey: true,
-    authType: 'api-key'
+    authType: 'api-key',
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        input: {
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { image: imageData },
+                { text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              ]
+            }
+          ]
+        }
+      };
+    },
+    parseResponse: function(data) {
+      return data.output?.choices?.[0]?.message?.content || data.output?.text || '';
+    }
   },
   'tencent': {
     name: '腾讯云',
@@ -44,7 +114,24 @@ const API_PROVIDERS = {
       { id: 'hunyuan-vision', name: 'hunyuan-vision' }
     ],
     needsKey: true,
-    authType: 'tc3'
+    authType: 'tc3',
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'baichuan': {
     name: '百川智能',
@@ -52,7 +139,24 @@ const API_PROVIDERS = {
     models: [
       { id: 'Baichuan-4-Vision', name: 'Baichuan-4-Vision' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'minimax': {
     name: 'MiniMax',
@@ -60,16 +164,50 @@ const API_PROVIDERS = {
     models: [
       { id: 'MiniMax-Text-01', name: 'MiniMax-Text-01' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            contents: [
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' },
+              { type: 'image_url', image_url: { url: imageData } }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content?.[0]?.text || '';
+    }
   },
   'stepfun': {
     name: '阶跃星辰',
     endpoint: 'https://api.stepfun.com/v1/chat/completions',
     models: [
-      { id: 'step-1v', name: 'step-1v' },
+      { id: 'step-1v', name: 'step-1v (推荐)' },
       { id: 'step-1o', name: 'step-1o' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'siliconflow': {
     name: 'SiliconFlow',
@@ -81,7 +219,24 @@ const API_PROVIDERS = {
       { id: 'ZhipuAI/GLM-4.6V', name: 'GLM-4.6V' },
       { id: 'Qwen/Qwen2.5-VL-7B-Instruct', name: 'Qwen2.5-VL-7B' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'deepseek': {
     name: 'DeepSeek',
@@ -89,17 +244,51 @@ const API_PROVIDERS = {
     models: [
       { id: 'deepseek-chat', name: 'deepseek-chat' }
     ],
-    needsKey: true
+    needsKey: true,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.choices?.[0]?.message?.content || '';
+    }
   },
   'ollama': {
     name: 'Ollama (本地)',
     endpoint: 'http://localhost:11434/api/chat',
     models: [
-      { id: 'llava', name: 'llava' },
+      { id: 'llava', name: 'llava (推荐)' },
       { id: 'llava:7b', name: 'llava:7b' },
       { id: 'llava:13b', name: 'llava:13b' }
     ],
-    needsKey: false
+    needsKey: false,
+    buildRequest: function(model, imageData) {
+      return {
+        model: model,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageData } },
+              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+            ]
+          }
+        ]
+      };
+    },
+    parseResponse: function(data) {
+      return data.message?.content || '';
+    }
   }
 };
 
@@ -149,7 +338,7 @@ async function generatePrompt(imageData) {
   const selectedModel = model || providerConfig.models[0]?.id;
   
   // 构建请求
-  const requestBody = buildRequestBody(providerConfig, selectedModel, imageData);
+  const requestBody = providerConfig.buildRequest(selectedModel, imageData);
   const headers = buildHeaders(providerConfig, apiKey);
   
   console.log('[图生提示词] 请求:', { provider: selectedProvider, model: selectedModel, endpoint: providerConfig.endpoint });
@@ -179,51 +368,22 @@ async function generatePrompt(imageData) {
   }
 
   const data = await response.json();
-  return parseResponse(data, providerConfig);
-}
-
-// 构建请求体
-function buildRequestBody(provider, model, imageData) {
-  const promptTemplate = `You are an expert at analyzing images for AI image generation. 
-
-STEP 1 - OCR/TEXT DETECTION:
-Carefully examine the image for ANY text. Write down every piece of text you find: "text content"
-
-STEP 2 - VISUAL ANALYSIS:
-- Subject: Main subject details
-- Action: What is happening
-- Setting: Environment
-- Composition: Camera angle
-- Style: Art style
-
-STEP 3 - GENERATE PROMPT:
-Create an AI image prompt. If text was found, include it!
-
-Output only the prompt.`;
-
-  return {
-    model: model,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: imageData } },
-          { type: 'text', text: promptTemplate }
-        ]
-      }
-    ]
-  };
+  return providerConfig.parseResponse(data);
 }
 
 // 构建请求头
 function buildHeaders(provider, apiKey) {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + apiKey
+  const headers = {
+    'Content-Type': 'application/json'
   };
-}
-
-// 解析响应
-function parseResponse(data, provider) {
-  return data.choices?.[0]?.message?.content || '';
+  
+  if (provider.authType === 'bce') {
+    headers['Authorization'] = apiKey;
+  } else if (provider.authType === 'api-key') {
+    headers['Authorization'] = 'Bearer ' + apiKey;
+  } else {
+    headers['Authorization'] = 'Bearer ' + apiKey;
+  }
+  
+  return headers;
 }
