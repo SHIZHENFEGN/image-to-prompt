@@ -1,14 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#818cf8"/>
+      <stop offset="50%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#a78bfa"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="6" fill="url(#grad)"/>
-  <g fill="none" stroke="#fff" stroke-width="2">
-    <rect x="6" y="6" width="20" height="20" rx="2"/>
-    <circle cx="11" cy="11" r="3" fill="#fff" stroke="none"/>
-    <polyline points="21 21 14 14 6 21"/>
-  </g>
+  
+  <!-- 背景 -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  
+  <!-- 图片框 -->
+  <rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
+  
+  <!-- 山 -->
+  <path d="M5 15 L8 11 L11 13 L15 8 L19 15" fill="none" stroke="#fff" stroke-width="1" opacity="0.7"/>
+  
+  <!-- 星星 -->
+  <circle cx="25" cy="8" r="1.5" fill="#fbbf24"/>
+  <circle cx="28" cy="12" r="1" fill="#fff" opacity="0.8"/>
+  
+  <!-- 提示线 -->
+  <path d="M22 16 Q26 22 22 27" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
 </svg>
