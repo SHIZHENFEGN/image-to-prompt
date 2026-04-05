@@ -196,6 +196,22 @@ function showContextMenu(x, y, imgSrc, imgElement) {
   var menu = document.createElement('div');
   menu.className = 'img-prompt-context-menu';
   menu.style.position = 'fixed';
+  
+  // 计算菜单位置，确保不超出视口
+  var menuWidth = 160;
+  var menuHeight = 100;
+  var padding = 8;
+  
+  // 检查右侧边界
+  if (x + menuWidth > window.innerWidth - padding) {
+    x = window.innerWidth - menuWidth - padding;
+  }
+  
+  // 检查底部边界
+  if (y + menuHeight > window.innerHeight - padding) {
+    y = window.innerHeight - menuHeight - padding;
+  }
+  
   menu.style.left = x + 'px';
   menu.style.top = y + 'px';
   menu.style.zIndex = '2147483647';
@@ -348,15 +364,15 @@ function showFloatingWindow(imgData, imgElement) {
   
   windowEl.innerHTML = 
     '<div class="img-prompt-floating-drag-handle">' +
-      '<span class="img-prompt-floating-title">AI生图提示词</span>' +
-      '<button class="img-prompt-floating-close">&times;</button>' +
+      '<span class="img-prompt-floating-title">✨ AI生图提示词</span>' +
+      '<button class="img-prompt-floating-close">✕</button>' +
     '</div>' +
     '<div class="img-prompt-floating-content">' +
       '<div class="img-prompt-floating-preview">' +
         '<img src="' + imgData + '" alt="预览">' +
       '</div>' +
       '<button class="img-prompt-floating-btn">' +
-        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">' +
+        '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">' +
           '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>' +
         '</svg>' +
         '生成提示词' +
@@ -397,19 +413,48 @@ function showFloatingWindow(imgData, imgElement) {
       
       if (response && response.success) {
         const promptText = response.prompt;
-        const lineCount = promptText.split('\n').length;
-        const estimatedHeight = Math.min(Math.max(120, lineCount * 20 + 100), 400);
         
         content.innerHTML = 
           '<div class="img-prompt-result-wrapper">' +
             '<div class="img-prompt-result-preview">' +
               '<img src="' + imgData + '" alt="预览">' +
             '</div>' +
-            '<div class="img-prompt-result-textarea-wrapper" style="max-height: ' + estimatedHeight + 'px">' +
+            '<div class="img-prompt-result-textarea-wrapper">' +
               '<div class="img-prompt-result-textarea">' + escapeHtml(promptText) + '</div>' +
             '</div>' +
             '<button class="img-prompt-result-copy-btn">复制提示词</button>' +
           '</div>';
+        
+        // 动态调整窗口尺寸（带过渡效果）
+        setTimeout(function() {
+          const wrapper = content.querySelector('.img-prompt-result-wrapper');
+          const textareaWrapper = content.querySelector('.img-prompt-result-textarea-wrapper');
+          const textarea = content.querySelector('.img-prompt-result-textarea');
+          
+          if (wrapper && textareaWrapper && textarea) {
+            // 获取内容实际高度
+            const contentHeight = wrapper.offsetHeight;
+            
+            // 计算合适的窗口最小高度
+            const minHeight = Math.max(280, contentHeight + 20);
+            
+            // 计算文本宽度，决定是否需要调整窗口宽度
+            const textWidth = textarea.scrollWidth;
+            const baseWidth = 320;
+            const newWidth = Math.min(Math.max(baseWidth, textWidth + 80), 500);
+            
+            // 先设置transition，再应用尺寸
+            windowEl.style.transition = 'min-height 0.4s ease, width 0.4s ease';
+            windowEl.style.minHeight = minHeight + 'px';
+            windowEl.style.height = 'auto';
+            if (textWidth > baseWidth - 60) {
+              windowEl.style.width = newWidth + 'px';
+            }
+            
+            // 确保文本区域不限制高度
+            textareaWrapper.style.maxHeight = 'none';
+          }
+        }, 100);
         
         content.querySelector('.img-prompt-result-copy-btn').addEventListener('click', function() {
           navigator.clipboard.writeText(promptText).then(function() {
@@ -484,6 +529,9 @@ function initDragFunctionality(windowEl) {
   let dragOffsetX = 0;
   let dragOffsetY = 0;
   
+  // 使用 requestAnimationFrame 优化拖拽
+  let animationFrameId = null;
+  
   handle.addEventListener('mousedown', function(e) {
     if (e.target.classList.contains('img-prompt-floating-close')) return;
     
@@ -493,22 +541,34 @@ function initDragFunctionality(windowEl) {
     dragOffsetY = e.clientY - rect.top;
     
     windowEl.style.cursor = 'grabbing';
+    windowEl.style.transition = 'none';
+    windowEl.style.position = 'fixed';
   });
   
-  document.addEventListener('mousemove', function(e) {
+  // 鼠标移动时使用 requestAnimationFrame 避免延迟
+  window.addEventListener('mousemove', function(e) {
     if (!isDragging) return;
     
-    const x = e.clientX - dragOffsetX;
-    const y = e.clientY - dragOffsetY;
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
     
-    windowEl.style.left = x + 'px';
-    windowEl.style.top = y + 'px';
+    animationFrameId = requestAnimationFrame(function() {
+      const x = e.clientX - dragOffsetX;
+      const y = e.clientY - dragOffsetY;
+      
+      windowEl.style.left = x + 'px';
+      windowEl.style.top = y + 'px';
+    });
   });
   
-  document.addEventListener('mouseup', function() {
+  window.addEventListener('mouseup', function() {
     if (isDragging) {
       isDragging = false;
       windowEl.style.cursor = 'grab';
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     }
   });
   
