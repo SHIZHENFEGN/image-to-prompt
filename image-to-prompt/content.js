@@ -3,7 +3,34 @@ console.log('[图生提示词] Content script loaded');
 
 const PREVIEW_MODAL_ID = 'img-prompt-preview-modal';
 
+// 默认黑名单域名（不显示悬浮按钮）
+var SITE_BLACKLIST = [
+  'github.com',
+  'githubusercontent.com',
+  'gitlab.com',
+  'bitbucket.org',
+  'avatars.githubusercontent',
+  'avatars.githubusercontent'
+];
+
+function isSiteBlacklisted() {
+  var hostname = window.location.hostname.toLowerCase();
+  var href = window.location.href.toLowerCase();
+  
+  for (var i = 0; i < SITE_BLACKLIST.length; i++) {
+    if (hostname.indexOf(SITE_BLACKLIST[i]) !== -1 || href.indexOf(SITE_BLACKLIST[i]) !== -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function createFloatingButton(imgElement) {
+  // 检查站点黑名单
+  if (isSiteBlacklisted()) {
+    return;
+  }
+  
   const imgSrc = imgElement.src;
   
   if (imgElement.dataset.promptSetup === 'true') {
