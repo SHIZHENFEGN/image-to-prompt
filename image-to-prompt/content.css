@@ -248,3 +248,25 @@
 .img-prompt-result-wrapper .img-prompt-result-retry-btn:hover {
   background: #444;
 }
+
+/* 右键菜单 */
+.img-prompt-context-menu {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 4px 0;
+  min-width: 150px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.img-prompt-context-menu-item {
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.img-prompt-context-menu-item:hover {
+  background: #6366f1;
+}

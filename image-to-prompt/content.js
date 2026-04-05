@@ -2,15 +2,92 @@
 console.log('[图生提示词] Content script loaded');
 
 const PREVIEW_MODAL_ID = 'img-prompt-preview-modal';
+const EXTENSION_ID = 'img-prompt-extension';
+
+// 本地存储键名
+var STORAGE_KEY = 'img-prompt-disabled-images';
+var SITE_STORAGE_KEY = 'img-prompt-disabled-sites';
+
+// 初始化本地存储
+function initStorage() {
+  try {
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(SITE_STORAGE_KEY)) {
+      localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify([]));
+    }
+  } catch (e) {
+    console.log('[图生提示词] 本地存储不可用');
+  }
+}
+
+// 获取禁用图片列表
+function getDisabledImages() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+// 获取禁用站点列表
+function getDisabledSites() {
+  try {
+    return JSON.parse(localStorage.getItem(SITE_STORAGE_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+// 禁用单个图片
+function disableImage(imgSrc) {
+  var disabled = getDisabledImages();
+  if (disabled.indexOf(imgSrc) === -1) {
+    disabled.push(imgSrc);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(disabled));
+  }
+}
+
+// 禁用当前站点
+function disableCurrentSite() {
+  var hostname = window.location.hostname;
+  var disabled = getDisabledSites();
+  if (disabled.indexOf(hostname) === -1) {
+    disabled.push(hostname);
+    localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify(disabled));
+  }
+}
+
+// 检查图片是否被禁用
+function isImageDisabled(imgSrc) {
+  var disabled = getDisabledImages();
+  for (var i = 0; i < disabled.length; i++) {
+    if (imgSrc.indexOf(disabled[i]) !== -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// 检查站点是否被禁用
+function isSiteDisabled() {
+  var hostname = window.location.hostname;
+  var disabled = getDisabledSites();
+  for (var i = 0; i < disabled.length; i++) {
+    if (hostname.indexOf(disabled[i]) !== -1) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // 默认黑名单域名（不显示悬浮按钮）
 var SITE_BLACKLIST = [
   'github.com',
   'githubusercontent.com',
   'gitlab.com',
-  'bitbucket.org',
-  'avatars.githubusercontent',
-  'avatars.githubusercontent'
+  'bitbucket.org'
 ];
 
 function isSiteBlacklisted() {
@@ -27,11 +104,16 @@ function isSiteBlacklisted() {
 
 function createFloatingButton(imgElement) {
   // 检查站点黑名单
-  if (isSiteBlacklisted()) {
+  if (isSiteBlacklisted() || isSiteDisabled()) {
     return;
   }
   
   const imgSrc = imgElement.src;
+  
+  // 检查图片是否被用户禁用
+  if (isImageDisabled(imgSrc)) {
+    return;
+  }
   
   if (imgElement.dataset.promptSetup === 'true') {
     const existingBtn = document.body.querySelector('.img-prompt-btn[data-img-src="' + CSS.escape(imgSrc) + '"]');
@@ -46,12 +128,20 @@ function createFloatingButton(imgElement) {
   const btn = document.createElement('button');
   btn.className = 'img-prompt-btn';
   btn.innerHTML = getBtnIconHTML();
-  btn.title = '生成AI提示词';
+  btn.title = '生成AI提示词 (右键禁用)';
   btn.dataset.imgSrc = imgSrc;
   
   document.body.appendChild(btn);
   
   updateButtonPosition(btn, imgElement);
+  
+  // 右键菜单 - 禁用图片或站点
+  btn.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    showContextMenu(e.clientX, e.clientY, imgSrc, imgElement);
+  });
   
   // 点击按钮显示浮动窗口
   btn.addEventListener('click', function(e) {
@@ -97,6 +187,75 @@ function createFloatingButton(imgElement) {
   });
 
   return btn;
+}
+
+// 显示右键菜单
+function showContextMenu(x, y, imgSrc, imgElement) {
+  removeContextMenu();
+  
+  var menu = document.createElement('div');
+  menu.className = 'img-prompt-context-menu';
+  menu.style.position = 'fixed';
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
+  menu.style.zIndex = '2147483647';
+  
+  var menuItems = [
+    {
+      text: '禁用此图片',
+      action: function() {
+        disableImage(imgSrc);
+        var btn = document.body.querySelector('.img-prompt-btn[data-img-src="' + CSS.escape(imgSrc) + '"]');
+        if (btn) btn.remove();
+        imgElement.dataset.promptSetup = 'false';
+        removeContextMenu();
+      }
+    },
+    {
+      text: '禁用整个站点',
+      action: function() {
+        disableCurrentSite();
+        document.body.querySelectorAll('.img-prompt-btn').forEach(function(btn) {
+          btn.remove();
+        });
+        removeContextMenu();
+      }
+    },
+    {
+      text: '恢复所有禁用',
+      action: function() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+        localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify([]));
+        removeContextMenu();
+        location.reload();
+      }
+    }
+  ];
+  
+  menuItems.forEach(function(item) {
+    var menuItem = document.createElement('div');
+    menuItem.className = 'img-prompt-context-menu-item';
+    menuItem.textContent = item.text;
+    menuItem.addEventListener('click', item.action);
+    menu.appendChild(menuItem);
+  });
+  
+  document.body.appendChild(menu);
+  
+  // 点击其他位置关闭菜单
+  var closeMenu = function(e) {
+    removeContextMenu();
+    document.removeEventListener('click', closeMenu);
+  };
+  setTimeout(function() {
+    document.addEventListener('click', closeMenu);
+  }, 100);
+}
+
+// 移除右键菜单
+function removeContextMenu() {
+  var menu = document.querySelector('.img-prompt-context-menu');
+  if (menu) menu.remove();
 }
 
 function updateButtonPosition(btn, imgElement) {
@@ -617,6 +776,9 @@ window.addEventListener('scroll', function() {
 
 // 初始化已有图片
 document.querySelectorAll('img').forEach(setupImageHover);
+
+// 初始化本地存储
+initStorage();
 
 console.log('[图生提示词] 扩展已加载');
 
