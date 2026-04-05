@@ -374,15 +374,44 @@ function isLikelyLogo(img) {
   const parent = img.parentElement;
   const parentTag = parent?.tagName?.toLowerCase() || '';
   
+  // data-component 属性检测（如 GitHub Avatar 组件）
+  var dataComponent = (img.getAttribute('data-component') || '').toLowerCase();
+  if (dataComponent.indexOf('avatar') !== -1 || dataComponent.indexOf('image') !== -1) {
+    return true;
+  }
+  
+  // data-testid 检测（如 github-avatar）
+  var dataTestid = (img.getAttribute('data-testid') || '').toLowerCase();
+  if (dataTestid.indexOf('avatar') !== -1 || dataTestid.indexOf('image') !== -1) {
+    return true;
+  }
+  
+  // srcset 检测（响应式图片通常是缩略图）
+  if (img.srcset && img.srcset.length > 0) {
+    return true;
+  }
+  
+  // alt 文本是纯用户名（不是图片描述）
+  // 如果 alt 是纯字母数字且较短，可能是用户名
+  if (alt.length > 0 && alt.length < 30 && /^[\w\s\-]+$/.test(alt) && !alt.match(/\b(photo|image|picture|img|图|照片|图片)\b/i)) {
+    // 且包含常见用户名关键词
+    if (alt.match(/^\w+$/) || alt.match(/^(user|profile|name|person)/i)) {
+      return true;
+    }
+  }
+  
   // URL 包含常见 logo/头像/图标 关键词
   var logoKeywords = ['logo', 'icon', 'favicon', 'avatar', 'profile', 'user', 'photo', 'headshot', 'placeholder', 'spinner', 'loading', 'pixel', '1x1', 'blank', 'sprite', 'btn', 'button', 'nav', 'menu', 'social', 'share', 'thumb', 'thumbnail', 'small', 'mini'];
   for (var i = 0; i < logoKeywords.length; i++) {
     if (src.indexOf(logoKeywords[i]) !== -1) return true;
   }
   
-  // GitHub 头像检测
-  if (src.indexOf('github') !== -1 && (src.indexOf('avatar') !== -1 || src.indexOf('u/') !== -1 || src.match(/avatars[\/\w\-]*\?/))) {
-    return true;
+  // GitHub 头像检测 - 更全面
+  if (src.indexOf('avatars.githubusercontent') !== -1 || src.indexOf('githubusercontent') !== -1) {
+    // URL 中包含 u/ 或 size= 参数的是头像
+    if (src.match(/[\/\?]u[\/=]/) || src.match(/[\?&]size=/)) {
+      return true;
+    }
   }
   
   // 常见图标/头像后缀
@@ -401,10 +430,15 @@ function isLikelyLogo(img) {
     if (alt.indexOf(altKeywords[j]) !== -1) return true;
   }
   
-  // class 包含常见 logo/icon/头像 类名
-  var classKeywords = ['logo', 'icon', 'avatar', 'profile', 'user', 'photo', 'thumb', 'badge', 'flag', 'brand', 'sprite', 'nav', 'menu', 'btn', 'button', 'social', 'share', 'mini', 'small', 'tiny', 'round', 'circle', 'square', 'gravatar', 'member', 'author', 'dropdown', 'popover'];
+  // class 包含常见 logo/icon/头像 类名（包括加密类名如 prc-Avatar-）
+  var classKeywords = ['logo', 'icon', 'avatar', 'profile', 'user', 'photo', 'thumb', 'badge', 'flag', 'brand', 'sprite', 'nav', 'menu', 'btn', 'button', 'social', 'share', 'mini', 'small', 'tiny', 'round', 'circle', 'square', 'gravatar', 'member', 'author', 'dropdown', 'popover', 'image'];
   for (var k = 0; k < classKeywords.length; k++) {
     if (className.indexOf(classKeywords[k]) !== -1) return true;
+  }
+  
+  // 如果类名包含 "Avatar"（不区分大小写）
+  if (className.indexOf('avatar') !== -1) {
+    return true;
   }
   
   // id 包含关键词
