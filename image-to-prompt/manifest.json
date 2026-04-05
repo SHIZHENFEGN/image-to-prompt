@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "图生提示词",
+  "version": "1.0.0",
+  "description": "将网页图片转化为 AI 生图提示词",
+  "icons": {
+    "16": "assets/icon16.svg",
+    "32": "assets/icon32.svg",
+    "48": "assets/icon48.svg",
+    "128": "assets/icon128.svg"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "assets/icon16.svg",
+      "32": "assets/icon32.svg"
+    },
+    "default_title": "图生提示词"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
