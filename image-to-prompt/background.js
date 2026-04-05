@@ -17,7 +17,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -42,7 +42,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -68,7 +68,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -96,7 +96,7 @@ const API_PROVIDERS = {
               role: 'user',
               content: [
                 { image: imageData },
-                { text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+                { text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
               ]
             }
           ]
@@ -123,7 +123,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -148,7 +148,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -172,7 +172,7 @@ const API_PROVIDERS = {
           {
             role: 'user',
             contents: [
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' },
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' },
               { type: 'image_url', image_url: { url: imageData } }
             ]
           }
@@ -199,7 +199,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -228,7 +228,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -253,7 +253,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
@@ -280,7 +280,7 @@ const API_PROVIDERS = {
             role: 'user',
             content: [
               { type: 'image_url', image_url: { url: imageData } },
-              { type: 'text', text: '请详细描述这张图片，包括主体、动作、场景、风格等，生成适合 AI 图像生成的英文提示词。只输出提示词内容。' }
+              { type: 'text', text: 'Please analyze this image in extreme detail. Include:\n1. Subject: appearance, expression, clothing, pose, action of people or objects\n2. Scene: environment, background, location, indoor or outdoor\n3. Text: any text, signs, posters, books, screen content - please identify and describe in detail (especially Chinese text)\n4. Lighting: light source direction, intensity, color temperature (warm/cool)\n5. Color: main color, color scheme, saturation\n6. Style: artistic style, art movement, era feel\n7. Composition: angle, depth of field, leading lines, symmetry/asymmetry\n8. Details: accessories, props, textures, materials\n\nOutput detailed English prompt for AI image generation. Only output the prompt. Include all visual details.' }
             ]
           }
         ]
